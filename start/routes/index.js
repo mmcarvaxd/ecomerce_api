@@ -25,3 +25,8 @@ Route.get('/', () => {
  * importa rota de autenticação
  */
 require('./auth')
+
+/**
+ * Immporta Rotas de Admin
+ */
+require('./admin')
