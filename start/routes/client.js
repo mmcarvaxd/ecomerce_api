@@ -13,8 +13,8 @@ const Route = use('Route')
     /**
      * Product resource Routes
      */
-    Route.get('products', 'ProductController.index').apiOnly()
-    Route.get('products/:id', 'ProductController.show').apiOnly()
+    Route.get('products', 'ProductController.index')
+    Route.get('products/:id', 'ProductController.show')
 
     /**
      * Order Resource Routes
