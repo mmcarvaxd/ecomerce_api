@@ -75,7 +75,7 @@ class CategoryController {
    * @param {Response} ctx.response
    */
   async update({ params, request, response }) {
-    const category = await Category.findOrFail(id)
+    const category = await Category.findOrFail(params.id)
     const { title, description, image_id} = request.all()
     
     await category.merge({title, description, image_id})
@@ -95,7 +95,7 @@ class CategoryController {
   async destroy({ params, request, response }) {
     const category = await Category.findOrFail(params.id)
     await category.delete()
-    return response.send(204).send()
+    return response.status(204).send()
   }
 }
 
