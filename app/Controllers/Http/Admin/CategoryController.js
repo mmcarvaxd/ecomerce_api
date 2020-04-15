@@ -86,6 +86,9 @@ class CategoryController {
    * @param {Response} ctx.response
    */
   async destroy({ params, request, response }) {
+    const category = await Category.findOrFail(params.id)
+    await category.delete()
+    return response.send(204).send()
   }
 }
 
