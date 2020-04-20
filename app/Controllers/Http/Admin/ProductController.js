@@ -69,6 +69,15 @@ class ProductController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+    const product = await Product.findOrFail(params.id)
+    try {
+      const { name, description, price, image_id } = request.all()
+      product.merge({name, description, price, image_id})
+      await product.save()
+      return response.send(product)
+    } catch (error) {
+      return response.status(400).send({ message: 'Não foi possivel atualizar este produto!' })
+    }
   }
 
   /**
