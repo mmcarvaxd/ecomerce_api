@@ -57,7 +57,9 @@ class ProductController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show ({ params, request, response }) {
+    const product = await Product.findOrFail(params.id)
+    return response.send(product)
   }
 
   /**
@@ -89,6 +91,13 @@ class ProductController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    const product = await Product.findOrFail(params.id)
+    try {
+      await product.delete()
+      return response.status(204).send()
+    } catch (error) {
+      return response.status(500).send({message: 'Não foi possivel deletar este produto!'})
+    }
   }
 }
 
