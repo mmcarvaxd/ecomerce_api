@@ -72,6 +72,12 @@ class UserController {
    * @param {Response} ctx.response
    */
   async update({ params, request, response }) {
+    const user = await User.findOrFail(params.id)
+    const userData = request.only(['name', 'surname', 'email', 'password', 'image_id'])
+    
+    user.merge(userData)
+    await user.save()
+    return response.send(user)
   }
 
   /**
@@ -83,6 +89,13 @@ class UserController {
    * @param {Response} ctx.response
    */
   async destroy({ params, request, response }) {
+    const user = await User.findOrFail(params.id)
+    try {
+      await user.delete()
+      return response.status(204).send()
+    } catch (error) {
+      return response.status(500).send({ message: 'Não foi possivel deletar o usuário'})
+    }
   }
 }
 
