@@ -25,6 +25,28 @@ const Helpers = use('Helpers')
     return string
  }
 
+ /**
+  * Move unique file to a specified path, if it wouldn't specified
+  * so 'public/uploads' will be the path
+  * @param { FileJar } file the file
+  * @param { string } path the specified path
+  */
+
+  const manage_single_upload = async (file, path = null) => {
+    path = path ? path : Helpers.publicPath('uploads')
+      
+    //generate a random name
+    const random_name = await str_random(30)
+    const file_name = `${new Date().getTime()}-${random_name}.${file.subtype}`
+
+    //rename file and move it to the path
+    await file.move(path, {
+        name: file_name
+    })
+
+    return file
+  }
+
  module.exports = {
      str_random
  }
