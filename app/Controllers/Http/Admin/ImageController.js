@@ -3,6 +3,8 @@
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
+const Image = use('App/Models/Image')
+const { manage_single_upload } = use('App/Helpers')
 
 /**
  * Resourceful controller for interacting with images
@@ -17,7 +19,9 @@ class ImageController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index({ response, pagination }) {
+    const images = await Image.query().orderBy('id', 'DESC').paginate(pagination.page, pagination.limit)
+    return response.send(images)
   }
 
   /**
@@ -28,7 +32,40 @@ class ImageController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store({ request, response }) {
+    try {
+      // get request images
+      const fileJar = request.file('images', {
+        types: ['image'],
+        size: '2mb'
+      })
+
+      // user return
+      let images = []
+
+      if (!fileJar.files) { //if it is only one image
+        const file = await manage_single_upload(fileJar)
+        if (file.moved()) {
+          const image = await Image.create({
+            path: file.fileName,
+            size: file.size,
+            original_name: file.clientName,
+            extension: file.subtype
+          })
+
+          images.push(image)
+
+          return response.status(201).send({ successes: images, errors: [] })
+        } else {
+          return response.status(400).send({ message: 'Não foi possivel processar essa imagem no momento'})
+        }
+      } else { //if it is more than one image
+
+      }
+
+    } catch (error) {
+
+    }
   }
 
   /**
@@ -40,7 +77,7 @@ class ImageController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show({ params, request, response, view }) {
   }
 
   /**
@@ -51,7 +88,7 @@ class ImageController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update({ params, request, response }) {
   }
 
   /**
@@ -62,7 +99,7 @@ class ImageController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy({ params, request, response }) {
   }
 }
 
