@@ -11,11 +11,11 @@ const Helpers = use('Helpers')
  * @return {string} random string
  */
 
- const str_random = async (length = 40) => {
+const str_random = async (length = 40) => {
     let string = ''
     let len = string.length
 
-    if(len < length) {
+    if (len < length) {
         let size = length - len
         let bytes = await crypto.randomBytes(size)
         let buffer = Buffer.from(bytes)
@@ -23,18 +23,18 @@ const Helpers = use('Helpers')
     }
 
     return string
- }
+}
 
- /**
-  * Move unique file to a specified path, if it wouldn't specified
-  * so 'public/uploads' will be the path
-  * @param { FileJar } file the file
-  * @param { string } path the specified path
-  */
+/**
+ * Move unique file to a specified path, if it wouldn't specified
+ * so 'public/uploads' will be the path
+ * @param { FileJar } file the file
+ * @param { string } path the specified path
+ */
 
-  const manage_single_upload = async (file, path = null) => {
+const manage_single_upload = async (file, path = null) => {
     path = path ? path : Helpers.publicPath('uploads')
-      
+
     //generate a random name
     const random_name = await str_random(30)
     const file_name = `${new Date().getTime()}-${random_name}.${file.subtype}`
@@ -45,8 +45,8 @@ const Helpers = use('Helpers')
     })
 
     return file
-  }
+}
 
- module.exports = {
-     str_random
- }
+module.exports = {
+    str_random
+}
