@@ -30,6 +30,7 @@ const str_random = async (length = 40) => {
  * so 'public/uploads' will be the path
  * @param { FileJar } file the file
  * @param { string } path the specified path
+ * @return { FileJar } 
  */
 
 const manage_single_upload = async (file, path = null) => {
@@ -45,6 +46,39 @@ const manage_single_upload = async (file, path = null) => {
     })
 
     return file
+}
+/**
+ * Move multiple files to a specified path, if it wouldn't specified
+ * so 'public/uploads' will be the path
+ * @param { FileJar } file the file
+ * @param { string } path the specified path
+ * @return { Object<FileJar> } 
+ */
+
+const manage_multiple_upload = async (fileJar, path = null) => {
+    path = path ? path : Helpers.publicPath('uploads')
+
+    let successes = [], errors = []
+
+    await Promise.all(fileJar.files.map(async (file) => {
+        //generate a random name
+        const random_name = await str_random(30)
+        
+        const file_name = `${new Date().getTime()}-${random_name}.${file.subtype}`
+    
+        //rename file and move it to the path
+        await file.move(path, {
+            name: file_name
+        })
+
+        if(file.moved()) {
+            successes.push(file)
+        } else {
+            errors.push(file.error())
+        }
+    }))
+
+    return {successes, errors}
 }
 
 module.exports = {
